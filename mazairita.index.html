@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no"
+    >
+
+    <title>Mazairita AR - Demo</title>
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+    <!--
+        Desactiva el Frustum Culling del modelo.
+        Esto evita que Three.js deje de renderizar
+        partes del modelo cuando considera que están
+        fuera del campo de visión.
+    -->
+    <script>
+
+        AFRAME.registerComponent('disable-culling', {
+
+            init: function () {
+
+                this.el.addEventListener('model-loaded', () => {
+
+                    const mesh = this.el.getObject3D('mesh');
+
+                    if (!mesh) {
+                        console.warn('No se encontró el mesh del modelo.');
+                        return;
+                    }
+
+                    mesh.traverse((node) => {
+
+                        if (node.isMesh) {
+                            node.frustumCulled = false;
+                        }
+
+                    });
+
+                    console.log('Frustum culling desactivado.');
+
+                });
+
+            }
+
+        });
+
+    </script>
+
+</head>
+
+
+<body style="margin: 0; overflow: hidden;">
+
+    <!-- ESCENA WEBXR -->
+
+    <a-scene
+        webxr="optionalFeatures: hit-test, local-floor;"
+        renderer="antialias: true;"
+    >
+
+        <!-- ========================= -->
+        <!-- ARCHIVOS / MODELOS -->
+        <!-- ========================= -->
+
+        <a-assets>
+
+            <a-asset-item
+                id="Mazairita"
+                src="MazairitaGiro.glb"
+            ></a-asset-item>
+
+        </a-assets>
+
+
+        <!-- ========================= -->
+        <!-- MODELO 3D -->
+        <!-- ========================= -->
+
+        <a-entity
+            id="mazairita"
+            gltf-model="#Mazairita"
+
+            disable-culling
+
+            position="0 0 -2"
+
+            rotation="0 0 0"
+
+            scale="1 1 1"
+        ></a-entity>
+
+
+    </a-scene>
+
+</body>
+
+</html>
